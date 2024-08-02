@@ -148,7 +148,7 @@ def merge_nodes(pts, indices, ijk, min_patch):
 def pca_eigen_values(x: torch.Tensor):
     temp = x[:, :3] - x.mean(dim=0)[None, :3]
     cov = (temp.transpose(0, 1) @ temp) / x.shape[0]
-    e, v = torch.symeig(cov, eigenvectors=True)
+    e, v = = torch.linalg.eigh(cov)
     n = v[:, 0]
     return e[0:1], n
 
@@ -156,7 +156,7 @@ def pca_eigen_values(x: torch.Tensor):
 def rotate_to_principle_components(x: torch.Tensor, scale=True):
     temp = x[:, :3] - x.mean(dim=0)[None, :3]
     cov = temp.transpose(0, 1) @ temp / x.shape[0]
-    e, v = torch.symeig(cov, eigenvectors=True)
+    e, v = = torch.linalg.eigh(cov)
 
     # rotate xyz
     rotated = x[:, :3]@v
@@ -177,7 +177,7 @@ def estimate_normals_torch(inputpc, max_nn):
     x = inputpc[knn][:, :, :3]
     temp = x[:, :, :3] - x.mean(dim=1)[:, None, :3]
     cov = temp.transpose(1, 2) @ temp / x.shape[0]
-    e, v = torch.symeig(cov, eigenvectors=True)
+    e, v = = torch.linalg.eigh(cov)
     n = v[:, :, 0]
     return torch.cat([inputpc[:, :3], n], dim=-1)
 
@@ -242,13 +242,13 @@ def timer_factory():
             self.count = count
 
         def __enter__(self):
-            self.start = time.clock()
+            self.start =time.perf_counter()
             if self.msg:
                 print(f'started: {self.msg}')
             return self
 
         def __exit__(self, typ, value, traceback):
-            self.duration = time.clock() - self.start
+            self.duration = time.perf_counter() - self.start
             if self.count:
                 MyTimer.total_count += self.duration
             if self.msg:
