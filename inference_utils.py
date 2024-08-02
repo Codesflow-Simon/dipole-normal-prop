@@ -54,7 +54,7 @@ def fix_n_filter(input_pc, patch_indices, threshold):
         x = input_pc[patch]
         temp = x[:, :3] - x.mean(dim=0)[None, :3]
         cov = (temp.transpose(0, 1) @ temp) / x.shape[0]
-        e, v = torch.symeig(cov, eigenvectors=True)
+        e, v = = torch.linalg.eigh(cov)
         n = v[:, 0]
         return (e[0] / ((e[1] + e[2] / 2))).item() > threshold, n
 
