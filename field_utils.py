@@ -211,7 +211,7 @@ def strongest_field_propagation(pts, patches, all_patches, diffuse=False, weight
 
         # find the flattest patch to start with
         curv = [util.pca_eigen_values(pts[patch]) for patch in all_patches]
-        min_index = np.array([curv[i][0] for i in range(len(all_patches))])
+        min_index = np.array([curv[i][0].cpu() for i in range(len(all_patches))])
         min_index = np.abs(min_index)
         min_index = np.argmin(min_index)
 

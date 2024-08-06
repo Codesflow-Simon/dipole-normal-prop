@@ -70,6 +70,10 @@ def divide_pc(pc_in: torch.Tensor, n_part: int, ranges=(-1.5, 1.5),
             return torch.arange(n, device=mask.device)[mask]
         else:
             return torch.arange(n)[mask]
+        if torch.cuda.is_available():
+            return torch.arange(n, device=mask.device)[mask]
+        else:
+            return torch.arange(n)[mask]
 
     def bounds(t):
         l = edge_len * t + ranges[0]
@@ -148,7 +152,7 @@ def merge_nodes(pts, indices, ijk, min_patch):
 def pca_eigen_values(x: torch.Tensor):
     temp = x[:, :3] - x.mean(dim=0)[None, :3]
     cov = (temp.transpose(0, 1) @ temp) / x.shape[0]
-    e, v = = torch.linalg.eigh(cov)
+    e, v = torch.symeig(cov, eigenvectors=True)
     n = v[:, 0]
     return e[0:1], n
 
@@ -156,7 +160,7 @@ def pca_eigen_values(x: torch.Tensor):
 def rotate_to_principle_components(x: torch.Tensor, scale=True):
     temp = x[:, :3] - x.mean(dim=0)[None, :3]
     cov = temp.transpose(0, 1) @ temp / x.shape[0]
-    e, v = = torch.linalg.eigh(cov)
+    e, v = torch.symeig(cov, eigenvectors=True)
 
     # rotate xyz
     rotated = x[:, :3]@v
@@ -177,7 +181,7 @@ def estimate_normals_torch(inputpc, max_nn):
     x = inputpc[knn][:, :, :3]
     temp = x[:, :, :3] - x.mean(dim=1)[:, None, :3]
     cov = temp.transpose(1, 2) @ temp / x.shape[0]
-    e, v = = torch.linalg.eigh(cov)
+    e, v = torch.symeig(cov, eigenvectors=True)
     n = v[:, :, 0]
     return torch.cat([inputpc[:, :3], n], dim=-1)
 
@@ -242,7 +246,7 @@ def timer_factory():
             self.count = count
 
         def __enter__(self):
-            self.start =time.perf_counter()
+            self.start = time.clock()
             if self.msg:
                 print(f'started: {self.msg}')
             return self

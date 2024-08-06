@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Orient pointcloud",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/lit079/dipole-normal-prop/orient_pointcloud.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--pc",
+                "./converted_xyz/model_normalized_0.xyz",
+                "--export_dir",
+                "./converted_xyz/",
+                "--models",
+                "./pre_trained/hands2.pt",
+                "./pre_trained/hands.pt",
+                "./pre_trained/manmade.pt"
+            ]
+        }
+    ]
+}
