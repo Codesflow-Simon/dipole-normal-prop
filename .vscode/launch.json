@@ -8,7 +8,7 @@
             "name": "Python Debugger: Orient pointcloud",
             "type": "debugpy",
             "request": "launch",
-            "program": "/home/lit079/dipole-normal-prop/orient_pointcloud.py",
+            "program": "./orient_pointcloud.py",
             "console": "integratedTerminal",
             "args": [
                 "--pc",
