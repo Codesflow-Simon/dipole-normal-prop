@@ -3,9 +3,6 @@
 # create and activate env
 conda init
 
-conda create -n dipole python=3.11
-conda activate dipole
-
 # Automatically ships with cu121
 pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 --index-url https://download.pytorch.org/whl/cu118
 echo "\n----Installing torch-cluster, this make take a while----"
